@@ -1,22 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client';
 
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message, Select } from 'antd';
 import { useRouter } from 'next/navigation';
+import { useCreatePost } from '@/hooks/useCreatePost';
+import { useUserStore } from '@/stores/useUserStore';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 const CreatePostPage = () => {
     const [form] = Form.useForm();
     const router = useRouter();
 
-    const onFinish = (values: any) => {
-        console.log('Bài viết mới:', values);
-        message.success('Tạo bài viết thành công!');
+    const user = useUserStore((state) => state.user);
+    const { mutate: createPost, isPending } = useCreatePost();
 
-        // Sau đó chuyển hướng về trang chủ hoặc trang bài viết
-        router.push('/');
+    const onFinish = (values: any) => {
+        const postData = {
+            ...values,
+            tags: values.tags || [],
+        };
+
+        createPost(postData, {
+            onSuccess: () => {
+                message.success('Tạo bài viết thành công!');
+                router.push(`/profile/${user?.id}`);
+            },
+            onError: (error: any) => {
+                message.error(`Tạo bài viết thất bại: ${error?.response?.data?.message || error.message}`);
+            },
+        });
     };
 
     return (
@@ -33,8 +47,19 @@ const CreatePostPage = () => {
                         <TextArea rows={6} placeholder="Nhập nội dung bài viết" />
                     </Form.Item>
 
+                    <Form.Item label="Tags" name="tags">
+                        <Select mode="tags" placeholder="Nhập các tag liên quan (Enter để thêm)" tokenSeparators={[',']} />
+                    </Form.Item>
+
+                    <Form.Item label="Trạng thái bài viết" name="status" initialValue="draft" rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}>
+                        <Select>
+                            <Option value="draft">Nháp</Option>
+                            <Option value="published">Công khai</Option>
+                        </Select>
+                    </Form.Item>
+
                     <Form.Item>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" loading={isPending}>
                             Đăng bài
                         </Button>
                     </Form.Item>

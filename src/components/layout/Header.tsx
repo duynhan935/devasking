@@ -1,17 +1,35 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
-import { useUserStore } from '@/stores/useUserStore';
 import { Avatar, Dropdown, MenuProps } from 'antd';
 import { UserOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
+import { useUserStore } from '@/stores/useUserStore';
+import { getUserProfile } from '@/lib/api/user.api';
 
 export default function Header() {
     const user = useUserStore((state) => state.user);
-
+    const setUser = useUserStore((state) => state.setUser);
     const clearUser = useUserStore((state) => state.clearUser);
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            const token = localStorage.getItem('accessToken');
+            if (token && !user) {
+                try {
+                    const userData = await getUserProfile();
+                    setUser(userData);
+                } catch (err) {
+                    console.error('Lỗi khi lấy thông tin user:', err);
+                    clearUser();
+                }
+            }
+        };
+        fetchUser();
+    }, []);
+
     const handleLogout = () => {
-        localStorage.removeItem('access_token');
+        localStorage.removeItem('accessToken');
         clearUser();
         window.location.href = '/auth/login';
     };
@@ -32,12 +50,10 @@ export default function Header() {
     return (
         <header className="w-full bg-white shadow">
             <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                {/* Logo */}
                 <Link href="/" className="text-2xl font-bold text-blue-600">
                     DevShare <span className="text-gray-800">Lite</span>
                 </Link>
 
-                {/* Navigation */}
                 <nav className="flex items-center gap-6 text-sm">
                     <Link href="/posts/create" className="text-gray-700 hover:text-blue-600">
                         Đăng bài
