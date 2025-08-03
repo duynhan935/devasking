@@ -3,7 +3,7 @@
 
 import { Form, Input, Button, message, Select } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useCreatePost } from '@/hooks/useCreatePost';
+import { useCreatePost } from '@/hooks/post/useCreatePost';
 import { useUserStore } from '@/stores/useUserStore';
 
 const { TextArea } = Input;
@@ -34,8 +34,8 @@ const CreatePostPage = () => {
     };
 
     return (
-        <div className="pt-24 px-4">
-            <div className="max-w-2xl mx-auto py-8 px-6 bg-white shadow-md rounded-xl">
+        <div className="pt-10 pb-10 px-4">
+            <div className="max-w-2xl mx-auto py-8 px-6 bg-white shadow-md rounded-xl mb-10">
                 <h1 className="text-2xl font-bold mb-6">Tạo bài viết mới</h1>
 
                 <Form form={form} layout="vertical" onFinish={onFinish}>

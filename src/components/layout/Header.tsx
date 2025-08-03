@@ -2,31 +2,26 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Avatar, Dropdown, MenuProps } from 'antd';
+import { Avatar, Dropdown, MenuProps, Spin } from 'antd';
 import { UserOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
 import { useUserStore } from '@/stores/useUserStore';
-import { getUserProfile } from '@/lib/api/user.api';
+import { useUserProfile } from '@/hooks/profile/useGetProfile';
 
 export default function Header() {
     const user = useUserStore((state) => state.user);
     const setUser = useUserStore((state) => state.setUser);
     const clearUser = useUserStore((state) => state.clearUser);
 
+    const { data, isLoading, error } = useUserProfile();
+    
     useEffect(() => {
-        const fetchUser = async () => {
-            const token = localStorage.getItem('accessToken');
-            if (token && !user) {
-                try {
-                    const userData = await getUserProfile();
-                    setUser(userData);
-                } catch (err) {
-                    console.error('Lỗi khi lấy thông tin user:', err);
-                    clearUser();
-                }
-            }
-        };
-        fetchUser();
-    }, []);
+        if (data && !user) {
+            setUser(data);
+        }
+        if (error) {
+            clearUser();
+        }
+    }, [data, error]);
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
@@ -55,17 +50,21 @@ export default function Header() {
                 </Link>
 
                 <nav className="flex items-center gap-6 text-sm">
-                    <Link href="/posts/create" className="text-gray-700 hover:text-blue-600">
-                        Đăng bài
-                    </Link>
+                    {isLoading ? (
+                        <Spin size="small" />
+                    ) : user ? (
+                        <>
+                            <Link href="/posts/create" className="text-gray-700 hover:text-blue-600">
+                                Đăng bài
+                            </Link>
 
-                    {user ? (
-                        <Dropdown menu={{ items }} placement="bottomRight" arrow>
-                            <div className="flex items-center gap-2 cursor-pointer">
-                                <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} size="small" />
-                                <span className="text-gray-700 hover:text-blue-600">{user.name}</span>
-                            </div>
-                        </Dropdown>
+                            <Dropdown menu={{ items }} placement="bottomRight" arrow>
+                                <div className="flex items-center gap-2 cursor-pointer">
+                                    <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} size="small" />
+                                    <span className="text-gray-700 hover:text-blue-600">{user.name}</span>
+                                </div>
+                            </Dropdown>
+                        </>
                     ) : (
                         <>
                             <Link href="/auth/login" className="text-gray-700 hover:text-blue-600">

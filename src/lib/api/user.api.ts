@@ -8,3 +8,4 @@ export const getUserProfile = async () => {
   });
   return res.data;
 };
+

@@ -1,28 +1,15 @@
 'use client';
+
 import { useParams } from 'next/navigation';
 import CommentList from '@/components/comments/CommentList';
+import { Spin } from 'antd';
+import { useGetPostById } from '@/hooks/post/useGetPostById';
 
 export default function PostDetailPage() {
-    const { id } = useParams();
+    const params = useParams();
+    const id = params.slug as string;
 
-    const post = {
-        id,
-        title: 'Cách học React hiệu quả',
-        author: 'Nguyễn Văn A',
-        content: `React là một thư viện JavaScript mạnh mẽ dùng để xây dựng giao diện người dùng.
-
-Để học hiệu quả, bạn nên bắt đầu với các khái niệm cơ bản như:
-- Component
-- Props
-- State
-- Hooks
-
-Sau đó là các khái niệm nâng cao như:
-- Context
-- Redux
-- Code splitting
-- Performance optimization`,
-    };
+    const { data: post, isLoading, isError, error } = useGetPostById(id);
 
     const fakeComments = [
         {
@@ -42,10 +29,24 @@ Sau đó là các khái niệm nâng cao như:
         },
     ];
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-60">
+                <Spin />
+            </div>
+        );
+    }
+
+    if (isError || !post) {
+        console.log(error);
+
+        return <div className="text-center text-red-500 py-10">Không thể tải bài viết. Vui lòng thử lại sau.</div>;
+    }
+
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
             <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
-            <p className="text-sm text-gray-600 mb-4">Tác giả: {post.author}</p>
+            <p className="text-sm text-gray-600 mb-4">Tác giả: {post.author?.name || 'Không rõ'}</p>
             <div className="text-base leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-md border">{post.content}</div>
 
             <CommentList initialComments={fakeComments} />
