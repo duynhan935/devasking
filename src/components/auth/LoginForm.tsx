@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useLogin } from '@/hooks/useLogin';
 import { message } from 'antd';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/stores/useUserStore';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ const LoginForm = () => {
     const router = useRouter();
 
     const { mutate: login, isPending } = useLogin();
+    const setUser = useUserStore((state) => state.setUser);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -20,16 +22,22 @@ const LoginForm = () => {
             { email, password },
             {
                 onSuccess: (data) => {
-                    console.log(data);
-
                     localStorage.setItem('accessToken', data?.access_token || '');
-                    message.success('Đăng nhập thành công!');
+
+                    setUser({
+                        id: data.user.id,
+                        name: data.user.name,
+                        email: data.user.email,
+                        role: data.user.role,
+                        isActive: data.user.isActive,
+                        isEmailVerified: data.user.isEmailVerified,
+                    });
+
+                    alert('Đăng nhập thành công!');
                     router.push('/');
                 },
                 onError: (error: any) => {
-                    console.log(error);
-
-                    message.error(error?.response?.data?.message || 'Đăng nhập thất bại');
+                    alert(error.response.data.message);
                 },
             }
         );
