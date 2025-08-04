@@ -15,6 +15,8 @@ const { Option } = Select;
 export default function MyPostsPage() {
     const router = useRouter();
     const { data: posts, isLoading, isError, error, refetch } = useMyPosts();
+
+
     const updateMutation = useUpdatePost();
     const deleteMutation = useDeletePost();
 
@@ -120,17 +122,13 @@ export default function MyPostsPage() {
                                     <Popconfirm
                                         title="Bạn có chắc chắn muốn xóa bài viết này?"
                                         onConfirm={(e) => {
-                                            e?.stopPropagation(); 
+                                            e?.stopPropagation();
                                             handleDelete(post._id);
                                         }}
                                         okText="Xóa"
                                         cancelText="Hủy"
                                     >
-                                        <Button
-                                            danger
-                                            type="link"
-                                            onClick={(e) => e.stopPropagation()} 
-                                        >
+                                        <Button danger type="link" onClick={(e) => e.stopPropagation()}>
                                             Xóa
                                         </Button>
                                     </Popconfirm>
