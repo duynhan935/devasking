@@ -45,3 +45,21 @@ export const getPostById = async (id: string) => {
     });
     return res.data;
 };
+
+export const updatePost = async (payload: PostPayload, id: string) => {
+    const res = await api.put(`/api/posts/${id}`, payload, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return res.data;
+};
+
+export const deletePost = async (id: string) => {
+    const res = await api.delete(`/api/posts/${id}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return res.data;
+};
