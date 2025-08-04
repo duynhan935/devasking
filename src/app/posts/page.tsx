@@ -3,8 +3,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useGetAllPosts } from '@/hooks/post/useGetAllPost';
 import { Spin } from 'antd';
+import { useGetAllPosts } from '@/hooks/post/post.hooks';
 
 export default function Posts() {
     const [page, setPage] = useState(1);

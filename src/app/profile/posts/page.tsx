@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useMyPosts } from '@/hooks/post/useGetMyPosts';
-import { useUpdatePost } from '@/hooks/post/useUpdatePost';
-import { useDeletePost } from '@/hooks/post/useDeletePost';
+import { useDeletePost, useMyPosts, useUpdatePost } from '@/hooks/post/post.hooks';
 
 import { Card, List, Tag, Typography, Spin, Empty, Button, Modal, Form, Input, Select, Popconfirm, message } from 'antd';
 import { useRouter } from 'next/navigation';
@@ -15,7 +13,6 @@ const { Option } = Select;
 export default function MyPostsPage() {
     const router = useRouter();
     const { data: posts, isLoading, isError, error, refetch } = useMyPosts();
-
 
     const updateMutation = useUpdatePost();
     const deleteMutation = useDeletePost();

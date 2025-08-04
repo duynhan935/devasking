@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import CommentList from '@/components/comments/CommentList';
 import { Spin } from 'antd';
-import { useGetPostById } from '@/hooks/post/useGetPostById';
+import { useGetPostById } from '@/hooks/post/post.hooks';
 
 export default function PostDetailPage() {
     const params = useParams();

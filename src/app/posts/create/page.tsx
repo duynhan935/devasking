@@ -3,8 +3,8 @@
 
 import { Form, Input, Button, message, Select } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useCreatePost } from '@/hooks/post/useCreatePost';
 import { useUserStore } from '@/stores/useUserStore';
+import { useCreatePost } from '@/hooks/post/post.hooks';
 
 const { TextArea } = Input;
 const { Option } = Select;
