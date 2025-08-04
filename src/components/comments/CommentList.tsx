@@ -1,45 +1,76 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CommentItem, { CommentType } from './CommentItem';
 import CommentForm from './CommentForm';
 
 interface CommentListProps {
     initialComments: CommentType[];
+    onAddComment?: (content: string, parentCommentId?: string | null) => Promise<void>;
+    onUpdateComment?: (commentId: string, content: string) => Promise<void>;
+    onDeleteComment?: (commentId: string) => Promise<void>;
 }
 
-export default function CommentList({ initialComments }: CommentListProps) {
+export default function CommentList({ initialComments, onAddComment, onUpdateComment, onDeleteComment }: CommentListProps) {
     const [comments, setComments] = useState<CommentType[]>(initialComments);
     const [showNewForm, setShowNewForm] = useState(false);
 
-    const addComment = (content: string) => {
-        const newComment: CommentType = {
-            id: Date.now(),
-            author: 'Bạn',
-            content,
-            replies: [],
-        };
-        setComments([newComment, ...comments]);
+    useEffect(() => {
+        setComments(initialComments);
+    }, [initialComments]);
+
+    const addComment = async (content: string) => {
+        if (onAddComment) {
+            await onAddComment(content);
+        } else {
+            const newComment: CommentType = {
+                id: Date.now().toString(),
+                author: 'Bạn',
+                content,
+                replies: [],
+            };
+            setComments([newComment, ...comments]);
+        }
         setShowNewForm(false);
     };
 
-    const addReply = (parentId: number, replyContent: string) => {
-        const updated = comments.map((comment) => {
-            if (comment.id === parentId) {
-                return {
-                    ...comment,
-                    replies: [
-                        ...(comment.replies || []),
-                        {
-                            id: Date.now(),
-                            author: 'Bạn',
-                            content: replyContent,
-                        },
-                    ],
-                };
-            }
-            return comment;
-        });
-        setComments(updated);
+    const addReply = async (parentId: string, replyContent: string) => {
+        if (onAddComment) {
+            await onAddComment(replyContent, parentId);
+        } else {
+            const updated = comments.map((comment) => {
+                if (comment.id === parentId) {
+                    return {
+                        ...comment,
+                        replies: [
+                            ...(comment.replies || []),
+                            {
+                                id: Date.now().toString(),
+                                author: 'Bạn',
+                                content: replyContent,
+                            },
+                        ],
+                    };
+                }
+                return comment;
+            });
+            setComments(updated);
+        }
+    };
+
+    const handleUpdate = async (commentId: string, content: string) => {
+        if (onUpdateComment) {
+            await onUpdateComment(commentId, content);
+        } else {
+            setComments((prev) => prev.map((c) => (c.id === commentId ? { ...c, content } : c)));
+        }
+    };
+
+    const handleDelete = async (commentId: string) => {
+        if (onDeleteComment) {
+            await onDeleteComment(commentId);
+        } else {
+            setComments((prev) => prev.filter((c) => c.id !== commentId));
+        }
     };
 
     return (
@@ -57,8 +88,8 @@ export default function CommentList({ initialComments }: CommentListProps) {
             )}
 
             <div className="space-y-4">
-                {comments.map((comment) => (
-                    <CommentItem key={comment.id} comment={comment} onReply={addReply} />
+                {(onAddComment ? initialComments : comments).map((comment) => (
+                    <CommentItem key={comment.id} comment={comment} onReply={addReply} onUpdate={handleUpdate} onDelete={handleDelete} />
                 ))}
             </div>
         </div>
