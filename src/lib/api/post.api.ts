@@ -63,3 +63,4 @@ export const deletePost = async (id: string) => {
     });
     return res.data;
 };
+
