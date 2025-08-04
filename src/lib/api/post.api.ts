@@ -1,5 +1,5 @@
 import api from '../axios';
-import { Post } from '@/types/post';    
+import { Post } from '@/types/post';
 
 // Create new Post
 export type PostPayload = {
@@ -24,8 +24,9 @@ export const getMyPosts = async (): Promise<Post[]> => {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
+
     return res.data;
-};  
+};
 
 export const getAllPosts = async () => {
     const res = await api.get('/api/posts', {

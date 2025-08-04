@@ -25,7 +25,7 @@ const CreatePostPage = () => {
         createPost(postData, {
             onSuccess: () => {
                 message.success('Tạo bài viết thành công!');
-                router.push(`/profile/${user?.id}`);
+                router.push(`/profile`);
             },
             onError: (error: any) => {
                 message.error(`Tạo bài viết thất bại: ${error?.response?.data?.message || error.message}`);

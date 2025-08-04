@@ -13,7 +13,7 @@ export default function Header() {
     const clearUser = useUserStore((state) => state.clearUser);
 
     const { data, isLoading, error } = useUserProfile();
-    
+
     useEffect(() => {
         if (data && !user) {
             setUser(data);
@@ -32,7 +32,7 @@ export default function Header() {
     const items: MenuProps['items'] = [
         {
             key: 'profile',
-            label: <Link href={`/profile/${user?.id}`}>Trang cá nhân</Link>,
+            label: <Link href={`/profile`}>Trang cá nhân</Link>,
             icon: <ProfileOutlined />,
         },
         {
