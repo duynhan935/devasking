@@ -5,12 +5,14 @@ import { useParams } from 'next/navigation';
 import CommentList from '@/components/comments/CommentList';
 import { Spin, App } from 'antd';
 import { useGetPostById } from '@/hooks/post/post.hooks';
-import { useGetComments, useCreateComment, useUpdateComment, useDeleteComment, useLikeComment } from '@/hooks/comment/comment.hooks';
+import { useGetComments, useCreateComment, useUpdateComment, useDeleteComment, useLikeComment, useGetCommentReplies } from '@/hooks/comment/comment.hooks';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function PostDetailPage() {
     const params = useParams();
     const id = params.slug as string;
     const { message } = App.useApp();
+    const queryClient = useQueryClient();
 
     const { data: post, isLoading, isError, error } = useGetPostById(id);
     const { data: commentsData, isLoading: isCommentsLoading, isError: isCommentsError, refetch: refetchComments } = useGetComments(id);
@@ -20,20 +22,7 @@ export default function PostDetailPage() {
     const deleteCommentMutation = useDeleteComment();
     const likeCommentMutation = useLikeComment();
 
-    // Đệ quy chuyển đổi replies lồng nhau
-    const mapReplies = (replies: any[]): any[] => {
-        return (
-            replies?.map((reply: any) => ({
-                id: reply._id,
-                author: reply.author?.name || 'Không rõ',
-                content: reply.content,
-                replies: mapReplies(reply.replies || []),
-                likeCount: reply.likeCount,
-                createdAt: reply.createdAt,
-            })) || []
-        );
-    };
-
+    // Chuyển đổi comments gốc (chỉ top-level comments)
     const convertComments = (comments: any[]) => {
         return comments
             .filter((comment) => !comment.parentComment)
@@ -41,7 +30,7 @@ export default function PostDetailPage() {
                 id: comment._id,
                 author: comment.author?.name || 'Không rõ',
                 content: comment.content,
-                replies: mapReplies(comment.replies || []),
+                replies: [], // Sẽ load riêng bằng useGetCommentReplies
                 likeCount: comment.likeCount,
                 createdAt: comment.createdAt,
             }));
@@ -57,6 +46,8 @@ export default function PostDetailPage() {
             });
             message.success('Đã thêm bình luận!');
             refetchComments();
+            // Invalidate tất cả cache replies để update real-time
+            queryClient.invalidateQueries({ queryKey: ['commentReplies', id] });
         } catch {
             message.error('Thêm bình luận thất bại!');
         }
@@ -72,6 +63,8 @@ export default function PostDetailPage() {
             });
             message.success('Đã cập nhật bình luận!');
             refetchComments();
+            // Invalidate tất cả cache replies để update real-time
+            queryClient.invalidateQueries({ queryKey: ['commentReplies', id] });
         } catch {
             message.error('Cập nhật bình luận thất bại!');
         }
@@ -83,6 +76,8 @@ export default function PostDetailPage() {
             await deleteCommentMutation.mutateAsync([id, commentId]);
             message.success('Đã xoá bình luận!');
             refetchComments();
+            // Invalidate tất cả cache replies để update real-time
+            queryClient.invalidateQueries({ queryKey: ['commentReplies', id] });
         } catch (error) {
             console.error('Lỗi khi xóa comment:', error);
             message.error('Xoá bình luận thất bại!');
@@ -94,6 +89,8 @@ export default function PostDetailPage() {
         try {
             await likeCommentMutation.mutateAsync({ postId: id, commentId });
             refetchComments();
+            // Invalidate tất cả cache replies để update real-time
+            queryClient.invalidateQueries({ queryKey: ['commentReplies', id] });
         } catch (error) {
             console.error('Lỗi khi like comment:', error);
             message.error('Like bình luận thất bại!');

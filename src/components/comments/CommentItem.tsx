@@ -141,13 +141,6 @@ export default function CommentItem({ comment, onReply, onUpdate, onDelete, onLi
                     </div>
                 )}
             </div>
-            {comment.replies && comment.replies.length > 0 && (
-                <div className="ml-6 mt-2 border-l border-gray-200 pl-4 space-y-2">
-                    {comment.replies.map((reply) => (
-                        <CommentItem key={reply.id} comment={reply} onReply={onReply} onUpdate={onUpdate} onDelete={onDelete} onLike={onLike} />
-                    ))}
-                </div>
-            )}
         </div>
     );
 }

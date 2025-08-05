@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import CommentItem, { CommentType } from './CommentItem';
+import CommentWithReplies from './CommentWithReplies';
+import { CommentType } from './CommentItem';
 import CommentForm from './CommentForm';
 
 interface CommentListProps {
@@ -90,7 +91,7 @@ export default function CommentList({ initialComments, onAddComment, onUpdateCom
 
             <div className="space-y-4">
                 {(onAddComment ? initialComments : comments).map((comment) => (
-                    <CommentItem key={comment.id} comment={comment} onReply={addReply} onUpdate={handleUpdate} onDelete={handleDelete} onLike={onLikeComment} />
+                    <CommentWithReplies key={comment.id} comment={comment} onReply={addReply} onUpdate={handleUpdate} onDelete={handleDelete} onLike={onLikeComment} />
                 ))}
             </div>
         </div>

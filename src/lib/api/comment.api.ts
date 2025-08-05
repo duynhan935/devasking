@@ -55,3 +55,11 @@ export const likeComment = async (postId: string, commentId: string) => {
     return res.data;
 };
 
+export const getAllReplies = async (postId: string, commentId: string): Promise<Comment[]> => {
+    const res = await api.get(`/api/posts/${postId}/comments/${commentId}/replies`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return res.data;
+};
