@@ -54,3 +54,4 @@ export const likeComment = async (postId: string, commentId: string) => {
     );
     return res.data;
 };
+

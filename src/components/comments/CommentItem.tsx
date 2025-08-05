@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Dropdown, Button, Input, App } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { EllipsisOutlined, HeartOutlined, HeartFilled } from '@ant-design/icons';
 import CommentForm from './CommentForm';
 
 export interface CommentType {
@@ -18,9 +18,10 @@ interface CommentItemProps {
     onReply?: (parentId: string, replyContent: string) => void;
     onUpdate?: (commentId: string, content: string) => Promise<void> | void;
     onDelete?: (commentId: string) => Promise<void> | void;
+    onLike?: (commentId: string) => Promise<void> | void;
 }
 
-export default function CommentItem({ comment, onReply, onUpdate, onDelete }: CommentItemProps) {
+export default function CommentItem({ comment, onReply, onUpdate, onDelete, onLike }: CommentItemProps) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [editing, setEditing] = useState(false);
     const [editContent, setEditContent] = useState(comment.content);
@@ -65,6 +66,17 @@ export default function CommentItem({ comment, onReply, onUpdate, onDelete }: Co
         });
     };
 
+    const handleLike = async () => {
+        if (onLike) {
+            try {
+                await onLike(comment.id);
+            } catch (error) {
+                console.error('Lỗi khi like comment:', error);
+                message.error('Like bình luận thất bại!');
+            }
+        }
+    };
+
     const items = [
         {
             key: 'edit',
@@ -106,11 +118,23 @@ export default function CommentItem({ comment, onReply, onUpdate, onDelete }: Co
                         </Dropdown>
                     )}
                 </div>
-                {onReply && !editing && (
-                    <button onClick={() => setShowReplyForm(!showReplyForm)} className="text-xs text-blue-600 mt-1 hover:underline">
-                        {showReplyForm ? 'Hủy' : 'Phản hồi'}
-                    </button>
-                )}
+
+                {/* Action buttons */}
+                <div className="flex items-center gap-4 mt-2">
+                    {onLike && !editing && (
+                        <button onClick={handleLike} className="flex items-center gap-1 text-xs text-gray-600 hover:text-red-500 transition-colors">
+                            <HeartOutlined />
+                            <span>{comment.likeCount || 0}</span>
+                        </button>
+                    )}
+
+                    {onReply && !editing && (
+                        <button onClick={() => setShowReplyForm(!showReplyForm)} className="text-xs text-blue-600 hover:underline">
+                            {showReplyForm ? 'Hủy' : 'Phản hồi'}
+                        </button>
+                    )}
+                </div>
+
                 {showReplyForm && (
                     <div className="mt-2 ml-4">
                         <CommentForm autoFocus placeholder="Viết phản hồi..." onSubmit={handleReply} />
@@ -120,7 +144,7 @@ export default function CommentItem({ comment, onReply, onUpdate, onDelete }: Co
             {comment.replies && comment.replies.length > 0 && (
                 <div className="ml-6 mt-2 border-l border-gray-200 pl-4 space-y-2">
                     {comment.replies.map((reply) => (
-                        <CommentItem key={reply.id} comment={reply} onReply={onReply} onUpdate={onUpdate} onDelete={onDelete} />
+                        <CommentItem key={reply.id} comment={reply} onReply={onReply} onUpdate={onUpdate} onDelete={onDelete} onLike={onLike} />
                     ))}
                 </div>
             )}

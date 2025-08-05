@@ -1,4 +1,4 @@
-import { CommentPayload, createComment, updateComment, deleteComment, getComments } from '@/lib/api/comment.api';
+import { CommentPayload, createComment, updateComment, deleteComment, getComments, likeComment } from '@/lib/api/comment.api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 // Hook for creating a comment
@@ -28,5 +28,12 @@ export const useGetComments = (postId: string) => {
         queryKey: ['comments', postId],
         queryFn: () => getComments(postId),
         enabled: !!postId,
+    });
+};
+
+// Hook for liking a comment
+export const useLikeComment = () => {
+    return useMutation({
+        mutationFn: ({ postId, commentId }: { postId: string; commentId: string }) => likeComment(postId, commentId),
     });
 };

@@ -8,9 +8,10 @@ interface CommentListProps {
     onAddComment?: (content: string, parentCommentId?: string | null) => Promise<void>;
     onUpdateComment?: (commentId: string, content: string) => Promise<void>;
     onDeleteComment?: (commentId: string) => Promise<void>;
+    onLikeComment?: (commentId: string) => Promise<void>;
 }
 
-export default function CommentList({ initialComments, onAddComment, onUpdateComment, onDeleteComment }: CommentListProps) {
+export default function CommentList({ initialComments, onAddComment, onUpdateComment, onDeleteComment, onLikeComment }: CommentListProps) {
     const [comments, setComments] = useState<CommentType[]>(initialComments);
     const [showNewForm, setShowNewForm] = useState(false);
 
@@ -89,7 +90,7 @@ export default function CommentList({ initialComments, onAddComment, onUpdateCom
 
             <div className="space-y-4">
                 {(onAddComment ? initialComments : comments).map((comment) => (
-                    <CommentItem key={comment.id} comment={comment} onReply={addReply} onUpdate={handleUpdate} onDelete={handleDelete} />
+                    <CommentItem key={comment.id} comment={comment} onReply={addReply} onUpdate={handleUpdate} onDelete={handleDelete} onLike={onLikeComment} />
                 ))}
             </div>
         </div>

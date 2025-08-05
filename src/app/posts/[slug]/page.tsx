@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import CommentList from '@/components/comments/CommentList';
 import { Spin, App } from 'antd';
 import { useGetPostById } from '@/hooks/post/post.hooks';
-import { useGetComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/comment/comment.hooks';
+import { useGetComments, useCreateComment, useUpdateComment, useDeleteComment, useLikeComment } from '@/hooks/comment/comment.hooks';
 
 export default function PostDetailPage() {
     const params = useParams();
@@ -17,8 +17,8 @@ export default function PostDetailPage() {
 
     const createCommentMutation = useCreateComment();
     const updateCommentMutation = useUpdateComment();
-
     const deleteCommentMutation = useDeleteComment();
+    const likeCommentMutation = useLikeComment();
 
     // Đệ quy chuyển đổi replies lồng nhau
     const mapReplies = (replies: any[]): any[] => {
@@ -89,6 +89,17 @@ export default function PostDetailPage() {
         }
     };
 
+    // Handler like comment
+    const handleLikeComment = async (commentId: string) => {
+        try {
+            await likeCommentMutation.mutateAsync({ postId: id, commentId });
+            refetchComments();
+        } catch (error) {
+            console.error('Lỗi khi like comment:', error);
+            message.error('Like bình luận thất bại!');
+        }
+    };
+
     if (isLoading || isCommentsLoading) {
         return (
             <div className="flex justify-center items-center h-60">
@@ -112,7 +123,7 @@ export default function PostDetailPage() {
             <p className="text-sm text-gray-600 mb-4">Tác giả: {post.author?.name || 'Không rõ'}</p>
             <div className="text-base leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-md border">{post.content}</div>
 
-            <CommentList initialComments={displayComments} onAddComment={handleAddComment} onUpdateComment={handleUpdateComment} onDeleteComment={handleDeleteComment} />
+            <CommentList initialComments={displayComments} onAddComment={handleAddComment} onUpdateComment={handleUpdateComment} onDeleteComment={handleDeleteComment} onLikeComment={handleLikeComment} />
         </div>
     );
 }
