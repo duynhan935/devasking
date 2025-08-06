@@ -34,6 +34,7 @@ export const getAllPosts = async () => {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
     });
+
     return res.data;
 };
 
@@ -64,3 +65,12 @@ export const deletePost = async (id: string) => {
     return res.data;
 };
 
+export const searchPosts = async (q: string, page: number, limit: number) => {
+    const res = await api.get('/api/posts/search', {
+        params: { q, page, limit },
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+    });
+    return res.data;
+};
