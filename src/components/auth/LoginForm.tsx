@@ -6,11 +6,14 @@ import { useLogin } from '@/hooks/auth/useLogin';
 import { App } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/stores/useUserStore';
+import { useQueryClient } from '@tanstack/react-query';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const { mutate: login, isPending } = useLogin();
     const setUser = useUserStore((state) => state.setUser);
@@ -18,6 +21,9 @@ const LoginForm = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        // Ẩn nút quên mật khẩu khi thử đăng nhập lại
+        setShowForgotPassword(false);
 
         login(
             { email, password },
@@ -32,11 +38,20 @@ const LoginForm = () => {
                         isEmailVerified: data.user.isEmailVerified,
                     });
 
+                    queryClient.invalidateQueries({ queryKey: ['user-profile'] });
+
                     message.success('Đăng nhập thành công!');
                     router.push('/');
                 },
                 onError: (error: any) => {
-                    message.error(error.response?.data?.message || 'Đăng nhập thất bại');
+                    const errorMessage = error.response?.data?.message || 'Đăng nhập thất bại';
+
+                    if (errorMessage === 'Invalid email or password') {
+                        setShowForgotPassword(true);
+                        message.error('Email hoặc mật khẩu không đúng');
+                    } else {
+                        message.error(errorMessage);
+                    }
                 },
             }
         );
@@ -59,6 +74,13 @@ const LoginForm = () => {
                 <button type="submit" className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition duration-200" disabled={isPending}>
                     {isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
                 </button>
+
+                {/* Nút Quên mật khẩu - chỉ hiển thị khi có lỗi đăng nhập */}
+                {showForgotPassword && (
+                    <button type="button" onClick={() => router.push('/auth/forgot-password')} className="w-full py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-md transition duration-200">
+                        Quên mật khẩu?
+                    </button>
+                )}
             </form>
 
             <p className="text-sm text-center text-gray-600 mt-4">

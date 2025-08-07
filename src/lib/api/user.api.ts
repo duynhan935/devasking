@@ -6,3 +6,16 @@ export const getUserProfile = async () => {
     });
     return res.data;
 };
+
+// Đổi mật khẩu
+export type changePasswordPayload = {
+    currentPassword: string;
+    newPassword: string;
+};
+
+export const changePassword = async (payload: changePasswordPayload) => {
+    const res = await api.post('/api/users/change-password', payload, {
+        withCredentials: true,
+    });
+    return res.data;
+};

@@ -39,3 +39,52 @@ export const logoutUser = async () => {
     );
     return response.data;
 };
+
+// Xác thực email người dùng
+export const verifyEmail = async (code: string) => {
+    const response = await api.get('/api/auth/verify-email', {
+        params: { code },
+        withCredentials: true,
+    });
+    return response.data;
+};
+
+// Yêu cầu password reset code
+export type RequestPasswordResetPayload = {
+    email: string;
+};
+
+export const requestPasswordReset = async (payload: RequestPasswordResetPayload) => {
+    const response = await api.post('/api/auth/forgot-password', payload, {
+        withCredentials: true,
+    });
+    return response.data;
+};
+
+// Xác thực password reset code và lấy token
+export type VerifyPasswordResetPayload = {
+    email: string;
+    code: string;
+};
+
+export const verifyPasswordReset = async (payload: VerifyPasswordResetPayload) => {
+    const response = await api.post('/api/auth/verify-reset-code', payload, {
+        withCredentials: true,
+    });
+    return response.data;
+};
+
+// Reset mật khẩu
+export type ResetPasswordPayload = {
+    resetToken: string;
+    newPassword: string;
+};
+
+export const resetPassword = async (payload: ResetPasswordPayload) => {
+    const response = await api.post('/api/auth/reset-password', payload, {
+        withCredentials: true,
+    });
+    console.log('Reset password response:', response.data); // Log the response for debugging
+
+    return response.data;
+};
