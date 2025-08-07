@@ -8,7 +8,9 @@ export type RegisterPayload = {
 };
 
 export const registerUser = async (payload: RegisterPayload) => {
-    const response = await api.post('/api/auth/register', payload);
+    const response = await api.post('/api/auth/register', payload, {
+        withCredentials: true,
+    });
     return response.data;
 };
 
@@ -20,6 +22,20 @@ export type LoginPayload = {
 };
 
 export const LoginUser = async (payload: LoginPayload) => {
-    const response = await api.post('/api/auth/login', payload);
+    const response = await api.post('/api/auth/login', payload, {
+        withCredentials: true,
+    });
+    return response.data;
+};
+
+// Đăng xuất
+export const logoutUser = async () => {
+    const response = await api.post(
+        '/api/auth/logout',
+        {},
+        {
+            withCredentials: true,
+        }
+    );
     return response.data;
 };

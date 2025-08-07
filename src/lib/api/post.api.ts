@@ -11,56 +11,42 @@ export type PostPayload = {
 
 export const createPost = async (payload: PostPayload) => {
     const res = await api.post('/api/posts', payload, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        withCredentials: true,
     });
     return res.data;
 };
 
 export const getMyPosts = async (): Promise<Post[]> => {
     const res = await api.get('/api/users/me/posts', {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        withCredentials: true,
     });
-
     return res.data;
 };
 
 export const getAllPosts = async () => {
     const res = await api.get('/api/posts', {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        withCredentials: true,
     });
-
     return res.data;
 };
 
 export const getPostById = async (id: string) => {
     const res = await api.get(`/api/posts/${id}`, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        withCredentials: true,
     });
     return res.data;
 };
 
 export const updatePost = async (payload: PostPayload, id: string) => {
     const res = await api.put(`/api/posts/${id}`, payload, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        withCredentials: true,
     });
     return res.data;
 };
 
 export const deletePost = async (id: string) => {
     const res = await api.delete(`/api/posts/${id}`, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        withCredentials: true,
     });
     return res.data;
 };
@@ -68,9 +54,7 @@ export const deletePost = async (id: string) => {
 export const searchPosts = async (q: string, page: number, limit: number) => {
     const res = await api.get('/api/posts/search', {
         params: { q, page, limit },
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+        withCredentials: true,
     });
     return res.data;
 };

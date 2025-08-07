@@ -4,9 +4,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRegister } from '@/hooks/auth/useRegister';
+import { App } from 'antd';
 
 const RegisterForm = () => {
     const router = useRouter();
+    const { message } = App.useApp();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -24,7 +26,7 @@ const RegisterForm = () => {
         e.preventDefault();
 
         if (formData.password !== formData.confirmPassword) {
-            alert('Mật khẩu không khớp');
+            message.error('Mật khẩu không khớp');
             return;
         }
 
@@ -36,13 +38,13 @@ const RegisterForm = () => {
             },
             {
                 onSuccess: () => {
-                    alert('Đăng ký thành công!');
+                    message.success('Đăng ký thành công!');
                     setTimeout(() => {
                         router.push('/auth/login');
                     }, 1500);
                 },
                 onError: (error: any) => {
-                    alert(error.response?.data?.message || 'Đăng ký thất bại');
+                    message.error(error.response?.data?.message || 'Đăng ký thất bại');
                 },
             }
         );

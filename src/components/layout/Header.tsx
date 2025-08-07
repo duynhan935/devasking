@@ -6,6 +6,7 @@ import { Avatar, Dropdown, MenuProps, Spin } from 'antd';
 import { UserOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
 import { useUserStore } from '@/stores/useUserStore';
 import { useUserProfile } from '@/hooks/profile/useGetProfile';
+import { useLogout } from '@/hooks/auth/useLogout';
 
 export default function Header() {
     const user = useUserStore((state) => state.user);
@@ -13,6 +14,7 @@ export default function Header() {
     const clearUser = useUserStore((state) => state.clearUser);
 
     const { data, isLoading, error } = useUserProfile();
+    const logoutMutation = useLogout();
 
     useEffect(() => {
         if (data && !user) {
@@ -21,12 +23,19 @@ export default function Header() {
         if (error) {
             clearUser();
         }
-    }, [data, error]);
+    }, [data, error, user, setUser, clearUser]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        clearUser();
-        window.location.href = '/auth/login';
+    const handleLogout = async () => {
+        try {
+            await logoutMutation.mutateAsync();
+            clearUser();
+            window.location.href = '/auth/login';
+        } catch (error) {
+            console.error('Logout failed:', error);
+            // Fallback: clear user anyway
+            clearUser();
+            window.location.href = '/auth/login';
+        }
     };
 
     const items: MenuProps['items'] = [

@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useLogin } from '@/hooks/auth/useLogin';
-import { message } from 'antd';
+import { App } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/stores/useUserStore';
 
@@ -14,6 +14,7 @@ const LoginForm = () => {
 
     const { mutate: login, isPending } = useLogin();
     const setUser = useUserStore((state) => state.setUser);
+    const { message } = App.useApp();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -22,8 +23,6 @@ const LoginForm = () => {
             { email, password },
             {
                 onSuccess: (data) => {
-                    localStorage.setItem('accessToken', data?.access_token || '');
-
                     setUser({
                         id: data.user.id,
                         name: data.user.name,
@@ -33,11 +32,11 @@ const LoginForm = () => {
                         isEmailVerified: data.user.isEmailVerified,
                     });
 
-                    alert('Đăng nhập thành công!');
+                    message.success('Đăng nhập thành công!');
                     router.push('/');
                 },
                 onError: (error: any) => {
-                    alert(error.response.data.message);
+                    message.error(error.response?.data?.message || 'Đăng nhập thất bại');
                 },
             }
         );

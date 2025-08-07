@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getAllPosts, getPostById, createPost, updatePost, deletePost, PostPayload, getMyPosts, searchPosts } from '@/lib/api/post.api';
 import { Post } from '@/types/post';
-import { useEffect, useState } from 'react';
 
 // Get post by ID
 export const useGetPostById = (id: string) => {
@@ -15,15 +14,29 @@ export const useGetPostById = (id: string) => {
 
 // Create post
 export const useCreatePost = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: (payload: PostPayload) => createPost(payload),
+        onSuccess: () => {
+            // Invalidate và refetch danh sách bài viết sau khi tạo thành công
+            queryClient.invalidateQueries({ queryKey: ['my-posts'] });
+            queryClient.invalidateQueries({ queryKey: ['all-posts'] });
+        },
     });
 };
 
 // Update post
 export const useUpdatePost = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: ({ id, payload }: { id: string; payload: PostPayload }) => updatePost(payload, id),
+        onSuccess: () => {
+            // Invalidate và refetch danh sách bài viết sau khi cập nhật thành công
+            queryClient.invalidateQueries({ queryKey: ['my-posts'] });
+            queryClient.invalidateQueries({ queryKey: ['all-posts'] });
+        },
     });
 };
 
@@ -43,19 +56,11 @@ export const useDeletePost = () => {
 
 // Get my posts
 export const useMyPosts = () => {
-    const [enabled, setEnabled] = useState(false);
-
-    useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            setEnabled(true);
-        }
-    }, []);
-
     return useQuery<Post[]>({
         queryKey: ['my-posts'],
         queryFn: getMyPosts,
-        enabled,
+        staleTime: 1000 * 60 * 5,
+        retry: 1,
     });
 };
 
@@ -79,7 +84,7 @@ export const usePostsWithSearch = (searchQuery?: string, page: number = 1, limit
     if (searchQuery && searchQuery.trim().length > 0) {
         const total = searchResults.data?.total || 0;
         const hasNextPage = page * limit < total;
-        
+
         return {
             data: searchResults.data?.posts,
             isLoading: searchResults.isLoading,
