@@ -2,23 +2,30 @@
 'use client';
 
 import { Form, Input, Button, message, Select } from 'antd';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '@/stores/useUserStore';
 import { useCreatePost } from '@/hooks/post/post.hooks';
+import MarkdownEditor from '@/components/common/MarkdownEditor';
 
-const { TextArea } = Input;
 const { Option } = Select;
 
 const CreatePostPage = () => {
     const [form] = Form.useForm();
+    const [content, setContent] = useState('');
     const router = useRouter();
 
-    const user = useUserStore((state) => state.user);
     const { mutate: createPost, isPending } = useCreatePost();
 
     const onFinish = (values: any) => {
+        // Validation: Kiểm tra content từ markdown editor
+        if (!content.trim()) {
+            message.error('Vui lòng nhập nội dung bài viết!');
+            return;
+        }
+
         const postData = {
             ...values,
+            content: content, // Sử dụng content từ markdown editor
             tags: values.tags || [],
         };
 
@@ -43,8 +50,8 @@ const CreatePostPage = () => {
                         <Input placeholder="Nhập tiêu đề bài viết" />
                     </Form.Item>
 
-                    <Form.Item label="Nội dung" name="content" rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}>
-                        <TextArea rows={6} placeholder="Nhập nội dung bài viết" />
+                    <Form.Item label="Nội dung" required>
+                        <MarkdownEditor value={content} onChange={setContent} placeholder="Nhập nội dung bài viết bằng Markdown..." height={300} />
                     </Form.Item>
 
                     <Form.Item label="Tags" name="tags">

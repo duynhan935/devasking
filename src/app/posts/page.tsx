@@ -16,6 +16,8 @@ export default function Posts() {
 
     const { data: posts, isLoading, isSearching, hasNextPage, hasPrevPage } = usePostsWithSearch(searchQuery, page, pageSize);
 
+    
+
     const handleClickPost = (postId: string) => {
         router.push(`/posts/${postId}`);
     };
@@ -66,14 +68,6 @@ export default function Posts() {
                             posts.map((item: any) => (
                                 <div key={item._id} onClick={() => handleClickPost(item._id)} className="bg-white shadow p-4 rounded cursor-pointer hover:shadow-md transition">
                                     <div className="text-lg font-semibold text-blue-600 hover:underline">{item.title}</div>
-                                    <div className="flex gap-2 mt-1">
-                                        {item.tags.map((tag: string) => (
-                                            <span key={tag} className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                    <p className="mt-2 text-sm text-gray-700">{item.content}</p>
                                 </div>
                             ))
                         ) : (

@@ -11,6 +11,8 @@
     "dependencies": {
         "@tanstack/react-query": "^5.84.1",
         "@tanstack/react-query-devtools": "^5.84.1",
+        "@uiw/react-markdown-preview": "^5.1.5",
+        "@uiw/react-md-editor": "^4.0.8",
         "antd": "^5.15.0",
         "axios": "^1.11.0",
         "next": "15.4.5",

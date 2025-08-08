@@ -14,6 +14,7 @@ export default function Header() {
     const clearUser = useUserStore((state) => state.clearUser);
 
     const { data, isLoading, error } = useUserProfile();
+
     const logoutMutation = useLogout();
 
     useEffect(() => {

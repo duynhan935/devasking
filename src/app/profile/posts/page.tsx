@@ -3,11 +3,11 @@
 
 import { useDeletePost, useMyPosts, useUpdatePost } from '@/hooks/post/post.hooks';
 
-import { Card, List, Tag, Typography, Spin, Empty, Button, Modal, Form, Input, Select, Popconfirm, message } from 'antd';
+import { Card, List, Typography, Spin, Empty, Button, Modal, Form, Input, Select, Popconfirm, message } from 'antd';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 const { Option } = Select;
 
 export default function MyPostsPage() {
@@ -96,12 +96,6 @@ export default function MyPostsPage() {
                                 extra={<span>Lượt xem: {post.viewCount}</span>}
                                 style={{ borderRadius: 8 }}
                             >
-                                <Paragraph ellipsis={{ rows: 3 }}>{post.content}</Paragraph>
-                                <div style={{ marginTop: 12 }}>
-                                    {post.tags.map((tag, index) => (
-                                        <Tag key={`${tag}-${index}`}>{tag}</Tag>
-                                    ))}
-                                </div>
                                 <div style={{ marginTop: 12, fontSize: 12, color: '#999' }}>
                                     Trạng thái: <strong>{post.status}</strong> | Ngày tạo: {new Date(post.createdAt).toLocaleString()}
                                 </div>

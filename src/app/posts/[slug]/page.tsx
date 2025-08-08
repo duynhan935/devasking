@@ -7,6 +7,7 @@ import { Spin, App } from 'antd';
 import { useGetPostById } from '@/hooks/post/post.hooks';
 import { useGetComments, useCreateComment, useUpdateComment, useDeleteComment, useLikeComment, useGetCommentReplies } from '@/hooks/comment/comment.hooks';
 import { useQueryClient } from '@tanstack/react-query';
+import MarkdownPreview from '@uiw/react-markdown-preview';
 
 export default function PostDetailPage() {
     const params = useParams();
@@ -15,6 +16,9 @@ export default function PostDetailPage() {
     const queryClient = useQueryClient();
 
     const { data: post, isLoading, isError, error } = useGetPostById(id);
+
+    
+
     const { data: commentsData, isLoading: isCommentsLoading, isError: isCommentsError, refetch: refetchComments } = useGetComments(id);
 
     const createCommentMutation = useCreateComment();
@@ -118,7 +122,30 @@ export default function PostDetailPage() {
         <div className="max-w-3xl mx-auto px-4 py-8">
             <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
             <p className="text-sm text-gray-600 mb-4">Tác giả: {post.author?.name || 'Không rõ'}</p>
-            <div className="text-base leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-md border">{post.content}</div>
+
+            {/* Render markdown content với ảnh căn giữa */}
+            <div className="markdown-content bg-gray-50 p-4 rounded-md border">
+                <MarkdownPreview
+                    source={post.content}
+                    style={{
+                        backgroundColor: 'transparent',
+                        color: '#333',
+                    }}
+                    wrapperElement={{
+                        'data-color-mode': 'light',
+                    }}
+                />
+                <style jsx>{`
+                    :global(.markdown-content img) {
+                        display: block;
+                        margin: 20px auto;
+                        max-width: 100%;
+                        height: auto;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    }
+                `}</style>
+            </div>
 
             <CommentList initialComments={displayComments} onAddComment={handleAddComment} onUpdateComment={handleUpdateComment} onDeleteComment={handleDeleteComment} onLikeComment={handleLikeComment} />
         </div>
