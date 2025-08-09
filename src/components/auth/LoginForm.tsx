@@ -22,20 +22,21 @@ const LoginForm = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Ẩn nút quên mật khẩu khi thử đăng nhập lại
         setShowForgotPassword(false);
 
         login(
             { email, password },
             {
                 onSuccess: (data) => {
+                    console.log('Login response data:', data); 
                     setUser({
-                        id: data.user.id,
+                        id: data.user.id || data.user._id,
                         name: data.user.name,
                         email: data.user.email,
                         role: data.user.role,
                         isActive: data.user.isActive,
                         isEmailVerified: data.user.isEmailVerified,
+                        avatar: data.user.avatar || null,
                     });
 
                     queryClient.invalidateQueries({ queryKey: ['user-profile'] });
@@ -75,7 +76,6 @@ const LoginForm = () => {
                     {isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
                 </button>
 
-                {/* Nút Quên mật khẩu - chỉ hiển thị khi có lỗi đăng nhập */}
                 {showForgotPassword && (
                     <button type="button" onClick={() => router.push('/auth/forgot-password')} className="w-full py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-md transition duration-200">
                         Quên mật khẩu?

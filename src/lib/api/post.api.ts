@@ -27,6 +27,7 @@ export const getAllPosts = async () => {
     const res = await api.get('/api/posts', {
         withCredentials: true,
     });
+
     return res.data;
 };
 
@@ -56,5 +57,7 @@ export const searchPosts = async (q: string, page: number, limit: number) => {
         params: { q, page, limit },
         withCredentials: true,
     });
+    console.log(res.data);
+
     return res.data;
 };

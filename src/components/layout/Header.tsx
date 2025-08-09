@@ -1,30 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
-import { Avatar, Dropdown, MenuProps, Spin } from 'antd';
+import { Avatar, Dropdown, MenuProps } from 'antd';
 import { UserOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
 import { useUserStore } from '@/stores/useUserStore';
-import { useUserProfile } from '@/hooks/profile/useGetProfile';
 import { useLogout } from '@/hooks/auth/useLogout';
 
 export default function Header() {
     const user = useUserStore((state) => state.user);
-    const setUser = useUserStore((state) => state.setUser);
+
     const clearUser = useUserStore((state) => state.clearUser);
 
-    const { data, isLoading, error } = useUserProfile();
-
     const logoutMutation = useLogout();
-
-    useEffect(() => {
-        if (data && !user) {
-            setUser(data);
-        }
-        if (error) {
-            clearUser();
-        }
-    }, [data, error, user, setUser, clearUser]);
 
     const handleLogout = async () => {
         try {
@@ -33,7 +20,6 @@ export default function Header() {
             window.location.href = '/auth/login';
         } catch (error) {
             console.error('Logout failed:', error);
-            // Fallback: clear user anyway
             clearUser();
             window.location.href = '/auth/login';
         }
@@ -60,9 +46,7 @@ export default function Header() {
                 </Link>
 
                 <nav className="flex items-center gap-6 text-sm">
-                    {isLoading ? (
-                        <Spin size="small" />
-                    ) : user ? (
+                    {user ? (
                         <>
                             <Link href="/posts/create" className="text-gray-700 hover:text-blue-600">
                                 Đăng bài
@@ -70,7 +54,7 @@ export default function Header() {
 
                             <Dropdown menu={{ items }} placement="bottomRight" arrow>
                                 <div className="flex items-center gap-2 cursor-pointer">
-                                    <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} size="small" />
+                                    <Avatar src={user.avatar} style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} size="small" />
                                     <span className="text-gray-700 hover:text-blue-600">{user.name}</span>
                                 </div>
                             </Dropdown>

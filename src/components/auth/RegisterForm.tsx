@@ -38,7 +38,7 @@ const RegisterForm = () => {
             },
             {
                 onSuccess: () => {
-                    message.success('Đăng ký thành công!');
+                    message.success('Đăng ký thành công! Hãy xác nhận tài khoản của bạn ở email cá nhân và đăng nhập.');
                     setTimeout(() => {
                         router.push('/auth/login');
                     }, 1500);

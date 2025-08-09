@@ -2,14 +2,20 @@
 'use client';
 
 import { useState } from 'react';
-import { Avatar, Button, Card, Descriptions, Input, Modal } from 'antd';
+import { Avatar, Button, Card, Descriptions, Input, Modal, App, Upload } from 'antd';
+import { CameraOutlined } from '@ant-design/icons';
 import UserPostList from './posts/page';
 import { useUserStore } from '@/stores/useUserStore';
+import { uploadAvatar } from '@/lib/api/upload.api';
 
 const UserProfile = () => {
     const { user, setUser } = useUserStore();
 
+
+    const { message } = App.useApp();
+
     const [isEditing, setIsEditing] = useState(false);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
     const [tempData, setTempData] = useState({
         name: '',
         email: '',
@@ -35,6 +41,58 @@ const UserProfile = () => {
         setIsEditing(false);
     };
 
+    const handleAvatarUpload = async (file: File) => {
+        if (!user) {
+            console.log('No user found');
+            return;
+        }
+
+        const userId = user.id || (user as any)._id;
+
+        if (!userId) {
+            console.error('User ID is missing:', user);
+            message.error('Không tìm thấy ID người dùng');
+            return;
+        }
+
+        try {
+            setIsUploadingAvatar(true);
+            message.loading('Đang upload avatar...', 0);
+            console.log('User ID for upload:', userId);
+
+            const avatar = await uploadAvatar(file, userId);
+
+            console.log('Avatar URL received:', avatar);
+
+            setUser({
+                ...user,
+                avatar: avatar,
+            });
+
+            message.destroy();
+            message.success('Cập nhật avatar thành công!');
+        } catch (error) {
+            console.error('Upload avatar failed:', error);
+            message.destroy();
+            message.error('Upload avatar thất bại!');
+        } finally {
+            setIsUploadingAvatar(false);
+        }
+    };
+
+    const handleAvatarClick = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (e: any) => {
+            const file = e.target.files?.[0];
+            if (file) {
+                await handleAvatarUpload(file);
+            }
+        };
+        input.click();
+    };
+
     if (!user) return <p className="text-center mt-10">Không tìm thấy thông tin người dùng.</p>;
 
     return (
@@ -44,7 +102,17 @@ const UserProfile = () => {
                 <div className="w-[300px] sticky top-4 self-start">
                     <Card>
                         <div className="flex flex-col items-center gap-4">
-                            <Avatar size={100} src="https://i.pravatar.cc/300" />
+                            <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
+                                <Avatar size={100} src={user.avatar || 'https://i.pravatar.cc/300'} />
+                                <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <CameraOutlined className="text-white text-xl" />
+                                </div>
+                                {isUploadingAvatar && (
+                                    <div className="absolute inset-0 bg-white bg-opacity-80 rounded-full flex items-center justify-center">
+                                        <span className="text-sm">Uploading...</span>
+                                    </div>
+                                )}
+                            </div>
                             <Descriptions title="Thông tin cá nhân" layout="vertical" bordered column={1} className="w-full">
                                 <Descriptions.Item label="Họ tên">{user.name}</Descriptions.Item>
                                 <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
@@ -61,13 +129,11 @@ const UserProfile = () => {
                     </Card>
                 </div>
 
-                {/* Nội dung: Danh sách bài viết */}
                 <div className="flex-1">
                     <UserPostList />
                 </div>
             </div>
 
-            {/* Modal chỉnh sửa */}
             <Modal title="Chỉnh sửa thông tin" open={isEditing} onOk={handleSave} onCancel={handleCancel} okText="Lưu" cancelText="Hủy">
                 <div className="flex flex-col gap-4">
                     <Input placeholder="Họ tên" value={tempData.name} onChange={(e) => setTempData({ ...tempData, name: e.target.value })} />

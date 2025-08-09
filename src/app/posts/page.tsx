@@ -16,7 +16,6 @@ export default function Posts() {
 
     const { data: posts, isLoading, isSearching, hasNextPage, hasPrevPage } = usePostsWithSearch(searchQuery, page, pageSize);
 
-    
 
     const handleClickPost = (postId: string) => {
         router.push(`/posts/${postId}`);
@@ -36,7 +35,6 @@ export default function Posts() {
         <div className="max-w-4xl mx-auto p-6 pt-24">
             <h1 className="text-2xl font-bold mb-4">DevShare Lite</h1>
 
-            {/* Search Input với Ant Design */}
             <Search
                 placeholder="Tìm kiếm bài viết..."
                 allowClear
@@ -75,7 +73,6 @@ export default function Posts() {
                         )}
                     </div>
 
-                    {/* Pagination với logic thông minh */}
                     {posts && posts.length > 0 && (
                         <div className="flex justify-center mt-6 gap-2">
                             <button onClick={() => setPage(page - 1)} disabled={!hasPrevPage} className="px-3 py-1 rounded border bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">

@@ -6,6 +6,7 @@ import { useDeletePost, useMyPosts, useUpdatePost } from '@/hooks/post/post.hook
 import { Card, List, Typography, Spin, Empty, Button, Modal, Form, Input, Select, Popconfirm, message } from 'antd';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import MarkdownEditor from '@/components/common/MarkdownEditor';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -19,10 +20,12 @@ export default function MyPostsPage() {
 
     const [editingPost, setEditingPost] = useState<any>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [editContent, setEditContent] = useState(''); // State cho markdown content
     const [form] = Form.useForm();
 
     const handleEdit = (post: any) => {
         setEditingPost(post);
+        setEditContent(post.content); // Set content cho MarkdownEditor
         setIsModalVisible(true);
         form.setFieldsValue({
             title: post.title,
@@ -35,10 +38,15 @@ export default function MyPostsPage() {
     const handleUpdate = async () => {
         try {
             const values = await form.validateFields();
-            await updateMutation.mutateAsync({ id: editingPost._id, payload: values });
+            const updateData = {
+                ...values,
+                content: editContent,
+            };
+            await updateMutation.mutateAsync({ id: editingPost._id, payload: updateData });
             message.success('Cập nhật bài viết thành công');
             setIsModalVisible(false);
             setEditingPost(null);
+            setEditContent('');
             refetch();
         } catch (err) {
             message.error('Cập nhật thất bại');
@@ -130,14 +138,28 @@ export default function MyPostsPage() {
                 )}
             />
 
-            <Modal open={isModalVisible} title="Chỉnh sửa bài viết" onCancel={() => setIsModalVisible(false)} onOk={handleUpdate} okText="Cập nhật" cancelText="Hủy" confirmLoading={updateMutation.isPending}>
+            <Modal
+                open={isModalVisible}
+                title="Chỉnh sửa bài viết"
+                onCancel={() => {
+                    setIsModalVisible(false);
+                    setEditContent(''); 
+                }}
+                onOk={handleUpdate}
+                okText="Cập nhật"
+                cancelText="Hủy"
+                confirmLoading={updateMutation.isPending}
+                width={800} 
+            >
                 <Form form={form} layout="vertical">
                     <Form.Item label="Tiêu đề" name="title" rules={[{ required: true, message: 'Vui lòng nhập tiêu đề' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Nội dung" name="content" rules={[{ required: true, message: 'Vui lòng nhập nội dung' }]}>
-                        <Input.TextArea rows={4} />
+
+                    <Form.Item label="Nội dung" required>
+                        <MarkdownEditor value={editContent} onChange={setEditContent} placeholder="Chỉnh sửa nội dung bằng Markdown..." height={250} />
                     </Form.Item>
+
                     <Form.Item label="Tags" name="tags" rules={[{ required: true, message: 'Nhập ít nhất 1 tag' }]}>
                         <Select mode="tags" style={{ width: '100%' }} placeholder="Ví dụ: nestjs, typescript" />
                     </Form.Item>
