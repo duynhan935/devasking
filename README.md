@@ -13,14 +13,20 @@ DevAsking là một dự án được xây dựng với TypeScript nhằm hỗ t
 
 ## 🚀 Công nghệ sử dụng
 
-- [![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white)](https://reactjs.org/) **React**
-- [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) **TypeScript**
-- [![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/) **Vite**
-- [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/) **Tailwind CSS**
-- [![Ant Design](https://img.shields.io/badge/Ant%20Design-0170FE?style=flat&logo=antdesign&logoColor=white)](https://ant.design/) **Ant Design**
-- [![React Router DOM](https://img.shields.io/badge/React%20Router%20DOM-CA4245?style=flat&logo=react-router&logoColor=white)](https://reactrouter.com/) **React Router DOM**
-- [![Redux Toolkit](https://img.shields.io/badge/Redux%20Toolkit-764ABC?style=flat&logo=redux&logoColor=white)](https://redux-toolkit.js.org/) **Redux Toolkit**
-- [![React Redux](https://img.shields.io/badge/React%20Redux-764ABC?style=flat&logo=redux&logoColor=white)](https://react-redux.js.org/) **React Redux**
+- [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) **Ngôn ngữ chính:** TypeScript
+- [![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white)](https://nextjs.org/) **Front-end Framework:** Next.js
+- [![Ant Design](https://img.shields.io/badge/Ant%20Design-0170FE?style=flat&logo=antdesign&logoColor=white)](https://ant.design/) **UI Framework:** Ant Design (antd)
+- [![Zustand](https://img.shields.io/badge/Zustand-FFA500?style=flat)](https://zustand-demo.pmnd.rs/) **State Management:** Zustand
+- [![React Query](https://img.shields.io/badge/React%20Query-FF4154?style=flat)](https://tanstack.com/query/v5) **State Management:** React Query (@tanstack/react-query)
+- [![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white)](https://axios-http.com/) **HTTP Client:** Axios
+- [![Markdown Editor](https://img.shields.io/badge/Markdown%20Editor-000?style=flat)](https://uiwjs.github.io/react-md-editor/) **Markdown Editor/Viewer:** @uiw/react-md-editor, @uiw/react-markdown-preview
+- [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/) **Styling:** TailwindCSS, PostCSS, Autoprefixer
+- [![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat&logo=eslint&logoColor=white)](https://eslint.org/) **Linting:** ESLint
+- [![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=flat&logo=prettier&logoColor=white)](https://prettier.io/) **Formatting:** Prettier
+- **Các thư viện phụ trợ khác:**
+  - [@tanstack/react-query-devtools](https://tanstack.com/query/v5/docs/devtools) (devtools cho React Query)
+  - Các type definitions: `@types/react`, `@types/node`, `@types/react-dom`,...
+- **Cấu hình & Quản lý:** `next.config.ts`, `eslint.config.mjs`, `.eslintrc.json`
 
 ---
 
