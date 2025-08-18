@@ -11,21 +11,18 @@ DevAsking là một dự án được xây dựng với TypeScript nhằm hỗ t
 - Hệ thống thông báo về cập nhật hoặc phản hồi mới
 - Quản lý hồ sơ cá nhân và lịch sử hoạt động
 
-## Công nghệ sử dụng
+## 🚀 Công nghệ sử dụng
 
-- **Ngôn ngữ chính:** TypeScript
-- **Front-end Framework:** Next.js
-- **UI Framework:** Ant Design (antd)
-- **State Management:** Zustand, React Query (@tanstack/react-query)
-- **HTTP Client:** Axios
-- **Markdown Editor/Viewer:** @uiw/react-md-editor, @uiw/react-markdown-preview
-- **Styling:** TailwindCSS, PostCSS, Autoprefixer
-- **Linting & Formatting:** ESLint, Prettier
-- **Testing:** 
-- **Các thư viện phụ trợ khác:**
-  - @tanstack/react-query-devtools (devtools cho React Query)
-  - Các type definitions: @types/react, @types/node, @types/react-dom,...
-- **Cấu hình & Quản lý:** next.config.ts, eslint.config.mjs, .eslintrc.json
+- [![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=white)](https://reactjs.org/) **React**
+- [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) **TypeScript**
+- [![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/) **Vite**
+- [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/) **Tailwind CSS**
+- [![Ant Design](https://img.shields.io/badge/Ant%20Design-0170FE?style=flat&logo=antdesign&logoColor=white)](https://ant.design/) **Ant Design**
+- [![React Router DOM](https://img.shields.io/badge/React%20Router%20DOM-CA4245?style=flat&logo=react-router&logoColor=white)](https://reactrouter.com/) **React Router DOM**
+- [![Redux Toolkit](https://img.shields.io/badge/Redux%20Toolkit-764ABC?style=flat&logo=redux&logoColor=white)](https://redux-toolkit.js.org/) **Redux Toolkit**
+- [![React Redux](https://img.shields.io/badge/React%20Redux-764ABC?style=flat&logo=redux&logoColor=white)](https://react-redux.js.org/) **React Redux**
+
+---
 
 ## Cài đặt và chạy dự án
 
