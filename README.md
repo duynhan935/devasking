@@ -5,7 +5,7 @@ DevAsking là một dự án được xây dựng với TypeScript nhằm hỗ t
 ## Tính năng chính
 
 - Đăng nhập và quản lý tài khoản người dùng
-- Đăng câu hỏi, và trả lời câu hỏi của người khác
+- Đăng câu hỏi kèm hình ảnh miêu tả về vấn đề gặp phải, và trả lời câu hỏi của người khác
 - Đánh dấu các câu hỏi quan trọng hoặc hữu ích
 - Tìm kiếm câu hỏi theo chủ đề, từ khoá
 - Hệ thống thông báo về cập nhật hoặc phản hồi mới
